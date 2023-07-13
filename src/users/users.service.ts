@@ -4,6 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
+import { skip } from 'node:test';
 
 export const roundsOfHashing = 10;
 
@@ -24,7 +25,10 @@ export class UsersService {
     });
   }
 
-  findAll(skip?: number, take?: number) {
+  findAll(data: { skip?: number; take?: number }) {
+    const skip = data.skip;
+    const take = data.take;
+    console.log('skip', skip);
     if (skip && take) {
       return this.prisma.user.findMany({ skip, take });
     }
