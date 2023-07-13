@@ -65,6 +65,8 @@ $ yarn run start:prod
 
 ## Test
 
+Go to http://localhost:3000/api to view the swagger documentation.
+
 ```bash
 # unit tests
 $ yarn run test
