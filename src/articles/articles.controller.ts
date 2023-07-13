@@ -8,11 +8,17 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ArticleEntity } from './entities/article.entity';
 
 @Controller('articles')
@@ -29,16 +35,26 @@ export class ArticlesController {
   }
 
   @Get()
+  @ApiQuery({ name: 'skip', required: false })
+  @ApiQuery({ name: 'take', required: false })
   @ApiOkResponse({ type: ArticleEntity, isArray: true })
-  async findAll() {
-    const articles = await this.articlesService.findAll();
+  async findAll(
+    @Query('skip', ParseIntPipe) skip?: number,
+    @Query('take', ParseIntPipe) take?: number,
+  ) {
+    const articles = await this.articlesService.findAll(skip, take);
     return articles.map((article) => new ArticleEntity(article));
   }
 
   @Get('drafts')
+  @ApiQuery({ name: 'skip', required: false })
+  @ApiQuery({ name: 'take', required: false })
   @ApiOkResponse({ type: ArticleEntity, isArray: true })
-  async findDrafts() {
-    const drafts = await this.articlesService.findDrafts();
+  async findDrafts(
+    @Query('skip', ParseIntPipe) skip?: number,
+    @Query('take', ParseIntPipe) take?: number,
+  ) {
+    const drafts = await this.articlesService.findDrafts(skip, take);
     return drafts.map((draft) => new ArticleEntity(draft));
   }
 

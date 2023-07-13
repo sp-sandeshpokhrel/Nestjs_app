@@ -24,8 +24,12 @@ export class UsersService {
     });
   }
 
-  findAll() {
-    return this.prisma.user.findMany();
+  findAll(skip?: number, take?: number) {
+    if (skip && take) {
+      return this.prisma.user.findMany({ skip, take });
+    }
+
+    return this.prisma.user.findMany({ take: 10 });
   }
 
   findOne(id: number) {

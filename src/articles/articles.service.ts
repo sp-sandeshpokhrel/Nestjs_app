@@ -11,12 +11,32 @@ export class ArticlesService {
     return this.prisma.article.create({ data: createArticleDto });
   }
 
-  findAll() {
-    return this.prisma.article.findMany({ where: { published: true } });
+  findAll(skip?: number, take?: number) {
+    if (skip && take) {
+      return this.prisma.article.findMany({
+        where: { published: true },
+        skip,
+        take,
+      });
+    }
+    return this.prisma.article.findMany({
+      where: { published: true },
+      take: 10,
+    });
   }
 
-  findDrafts() {
-    return this.prisma.article.findMany({ where: { published: false } });
+  findDrafts(skip?: number, take?: number) {
+    if (skip && take) {
+      return this.prisma.article.findMany({
+        where: { published: false },
+        skip,
+        take,
+      });
+    }
+    return this.prisma.article.findMany({
+      where: { published: false },
+      take: 10,
+    });
   }
 
   findOne(id: number) {
