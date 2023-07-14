@@ -1,39 +1,47 @@
 // prisma/seed.ts
-
 import { PrismaClient } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
-// initialize Prisma Client
+// initialize the Prisma Client
 const prisma = new PrismaClient();
 
+const roundsOfHashing = 10;
+
 async function main() {
-  // create two dummy articles
-  const post1 = await prisma.article.upsert({
-    where: { title: 'Prisma Adds Support for MongoDB' },
-    update: {},
+  // create two dummy users
+  const passwordSabin = await bcrypt.hash('password-sabin', roundsOfHashing);
+  const passwordAlex = await bcrypt.hash('password-alex', roundsOfHashing);
+
+  const user1 = await prisma.user.upsert({
+    where: { email: 'sabin@adams.com' },
+    update: {
+      password: passwordSabin,
+    },
     create: {
-      title: 'Prisma Adds Support for MongoDB',
-      body: 'Support for MongoDB has been one of the most requested features since the initial release of...',
-      description:
-        "We are excited to share that today's Prisma ORM release adds stable support for MongoDB!",
-      published: false,
+      email: 'sabin@adams.com',
+      name: 'Sabin Adams',
+      password: passwordSabin,
     },
   });
 
-  const post2 = await prisma.article.upsert({
-    where: { title: "What's new in Prisma? (Q1/22)" },
-    update: {},
+  const user2 = await prisma.user.upsert({
+    where: { email: 'alex@ruheni.com' },
+    update: {
+      password: passwordAlex,
+    },
     create: {
-      title: "What's new in Prisma? (Q1/22)",
-      body: 'Our engineers have been working hard, issuing new releases with many improvements...',
-      description:
-        'Learn about everything in the Prisma ecosystem and community from January to March 2022.',
-      published: true,
+      email: 'alex@ruheni.com',
+      name: 'Alex Ruheni',
+      password: passwordAlex,
     },
   });
 
-  console.log({ post1, post2 });
+  // create three dummy posts
+  // ...
 }
 
+// execute the main function
+// ...
 // execute the main function
 main()
   .catch((e) => {

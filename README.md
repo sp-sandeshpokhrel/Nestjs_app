@@ -24,7 +24,14 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+[Nest](https://github.com/nestjs/nest) framework TypeScript repository.
+
+### Features
+
+- Error handling by extending BaseExceptionFilter class to catch PrismaClientKnownRequestError
+- 2 types of authentication mechanism: JWT using local strategy and oauth2 using github strategy
+- Offset pagination using skip and take as query implemented
+- API documentation using Swagger
 
 ## Installation
 
@@ -32,9 +39,20 @@
 $ yarn install
 ```
 
+## Set Env File
+
+Make sure you have a .env file in the root directory of the project. The .env file should contain the variable as mentioned in .env.example.
+For database url use the following format(if using docker for the process):
+DATABASE_URL="postgres://myuser:mypassword@localhost:5432/median-db"
+
 ## Running the app
 
+Make sure docker is running on your machine.
+
 ```bash
+# database setup
+$ docker-compose up -d
+
 # development
 $ yarn run start
 
@@ -46,6 +64,8 @@ $ yarn run start:prod
 ```
 
 ## Test
+
+Go to http://localhost:3000/api to view the swagger documentation.
 
 ```bash
 # unit tests
