@@ -9,7 +9,9 @@ import {
   ValidationPipe,
   ClassSerializerInterceptor,
 } from '@nestjs/common';
-import { PrismaClientExceptionFilter } from './prisma-client-exception/prisma-client-exception.filter';
+//import { PrismaClientExceptionFilter } from './exceptions/prisma-client-exception.filter';
+import { AllExceptionsFilter } from './exceptions/allexception.filter';
+import { TransformInterceptor } from './transform/transform.interceptor';
 
 async function bootstrap() {
   const configService = new ConfigService();
@@ -21,7 +23,7 @@ async function bootstrap() {
   });
   const logger = new Logger('bootstrap');
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  //app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   const config = new DocumentBuilder()
     .setTitle('Median')
@@ -34,7 +36,8 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   const { httpAdapter } = app.get(HttpAdapterHost);
-  app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
+  app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
+  app.useGlobalInterceptors(new TransformInterceptor());
 
   const port = 3000;
   await app.listen(port);

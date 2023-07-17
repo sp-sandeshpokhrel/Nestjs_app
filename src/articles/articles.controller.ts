@@ -10,6 +10,7 @@ import {
   ParseIntPipe,
   Query,
   Logger,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
@@ -21,6 +22,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ArticleEntity } from './entities/article.entity';
+import { TransformInterceptor } from 'src/transform/transform.interceptor';
 
 @Controller('articles')
 @ApiTags('articles')
