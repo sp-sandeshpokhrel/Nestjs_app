@@ -1,6 +1,6 @@
 //auth.strategy.ts
 
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-github';
@@ -24,6 +24,7 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(PassportJwtStrategy, 'jwt2') {
+  private readonly logger = new Logger(JwtStrategy.name);
   constructor(configService: ConfigService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -35,8 +36,10 @@ export class JwtStrategy extends PassportStrategy(PassportJwtStrategy, 'jwt2') {
   async validate(payload: { sub: number; username: string }) {
     console.log(payload.sub, 'here', payload.username);
     if (!payload) {
+      this.logger.error('Invalid JWT, Could not validate payload');
       throw new UnauthorizedException();
     }
+    this.logger.log(`Validated JWT for user`);
     return { userId: payload.sub, username: payload.username };
   }
 }

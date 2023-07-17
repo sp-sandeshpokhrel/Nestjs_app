@@ -25,15 +25,8 @@ export class UsersService {
     });
   }
 
-  findAll(data: { skip?: number; take?: number }) {
-    const skip = data.skip;
-    const take = data.take;
-    console.log('skip', skip);
-    if (skip && take) {
-      return this.prisma.user.findMany({ skip, take });
-    }
-
-    return this.prisma.user.findMany({ take: 10 });
+  findAll(query: { skip?: number; take?: number }) {
+    return this.prisma.user.findMany({ ...query });
   }
 
   findOne(id: number) {

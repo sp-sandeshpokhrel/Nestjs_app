@@ -11,6 +11,7 @@ import {
   UseGuards,
   Query,
   Req,
+  Logger,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -28,12 +29,17 @@ import { AuthGuard } from '@nestjs/passport';
 @Controller('users')
 @ApiTags('users')
 export class UsersController {
+  private readonly logger = new Logger(UsersController.name);
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
   @ApiCreatedResponse({ type: UserEntity })
   async create(@Body() createUserDto: CreateUserDto) {
-    return new UserEntity(await this.usersService.create(createUserDto));
+    const data = await this.usersService.create(createUserDto);
+    if (data) {
+      this.logger.log(`Created user with id ${data.id}`);
+    }
+    return new UserEntity(data);
   }
 
   @Get()
@@ -44,12 +50,12 @@ export class UsersController {
   @ApiOkResponse({ type: UserEntity, isArray: true })
   async findAll(
     @Req() req,
-    @Query('skip', ParseIntPipe) skip?: number,
-    @Query('take', ParseIntPipe) take?: number,
+    @Query('skip') skip?: string,
+    @Query('take') take?: string,
   ) {
-    console.log('in user', req.user);
-    const data = { skip, take };
-    const users = await this.usersService.findAll(data);
+    let query = {};
+    if (skip && take) query = { skip: +skip, take: +take };
+    const users = await this.usersService.findAll(query);
     return users.map((user) => new UserEntity(user));
   }
 
@@ -69,7 +75,11 @@ export class UsersController {
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return new UserEntity(await this.usersService.update(id, updateUserDto));
+    const data = await this.usersService.update(id, updateUserDto);
+    if (data) {
+      this.logger.log(`Updated user with id ${data.id}`);
+    }
+    return new UserEntity(data);
   }
 
   @Delete(':id')
@@ -77,6 +87,10 @@ export class UsersController {
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserEntity })
   async remove(@Param('id', ParseIntPipe) id: number) {
-    return new UserEntity(await this.usersService.remove(id));
+    const data = await this.usersService.remove(id);
+    if (data) {
+      this.logger.log(`Deleted user with id ${data.id}`);
+    }
+    return new UserEntity(data);
   }
 }

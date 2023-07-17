@@ -1,6 +1,7 @@
 //src/auth/auth.service.ts
 import {
   Injectable,
+  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -11,6 +12,7 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
   constructor(private prisma: PrismaService, private jwtService: JwtService) {}
 
   async login(email: string, password: string): Promise<AuthEntity> {
@@ -31,6 +33,7 @@ export class AuthService {
     }
 
     // Step 3: Generate a JWT containing the user's ID and return it
+    this.logger.log(`Generated JWT for user`);
     return {
       accessToken: this.jwtService.sign({ userId: user.id }),
     };
