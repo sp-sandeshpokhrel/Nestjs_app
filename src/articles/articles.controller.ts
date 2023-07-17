@@ -10,6 +10,8 @@ import {
   ParseIntPipe,
   Query,
   Logger,
+  InternalServerErrorException,
+  //UseInterceptors,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
@@ -21,6 +23,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ArticleEntity } from './entities/article.entity';
+//import { TransformInterceptor } from 'src/transform/transform.interceptor';
 
 @Controller('articles')
 @ApiTags('articles')
@@ -32,9 +35,14 @@ export class ArticlesController {
   @ApiCreatedResponse({ type: ArticleEntity })
   async create(@Body() createArticleDto: CreateArticleDto) {
     const data = await this.articlesService.create(createArticleDto);
-    if (data) {
-      this.logger.log(`Created article with id ${data.id}`);
+    if (!data) {
+      this.logger.log(`Couldn't create article`);
+      throw new InternalServerErrorException({
+        error: 'PrismaError',
+        message: 'Article not created',
+      });
     }
+    this.logger.log(`Created article with id ${data.id}`);
     return new ArticleEntity(data);
   }
 
@@ -77,9 +85,14 @@ export class ArticlesController {
     @Body() updateArticleDto: UpdateArticleDto,
   ) {
     const data = await this.articlesService.update(id, updateArticleDto);
-    if (data) {
-      this.logger.log(`Updated article with id ${data.id}`);
+    if (!data) {
+      this.logger.log(`Couldn't update article`);
+      throw new InternalServerErrorException({
+        error: 'PrismaError',
+        message: 'Article not updated',
+      });
     }
+    this.logger.log(`Updated article with id ${data.id}`);
     return new ArticleEntity(data);
   }
 
@@ -87,8 +100,12 @@ export class ArticlesController {
   @ApiOkResponse({ type: ArticleEntity })
   async remove(@Param('id', ParseIntPipe) id: number) {
     const data = await this.articlesService.remove(id);
-    if (data) {
-      this.logger.log(`Deleted article with id ${data.id}`);
+    if (!data) {
+      this.logger.log(`Couldn't delete article`);
+      throw new InternalServerErrorException({
+        error: 'PrismaError',
+        message: 'Article not deleted',
+      });
     }
     return new ArticleEntity(data);
   }

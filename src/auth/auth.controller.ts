@@ -1,13 +1,13 @@
 //src/auth/auth.controller.ts
 
 import {
+  Get,
+  Req,
   Body,
   Controller,
   Post,
-  Get,
-  UseGuards,
-  Req,
   Logger,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -34,7 +34,7 @@ export class AuthController {
   @Get('github')
   @UseGuards(AuthGuard('github'))
   async login2() {
-    console.log('here');
+    //
   }
 
   @Get('callback')
@@ -42,7 +42,7 @@ export class AuthController {
   async authCallback(@Req() req) {
     const user = req.user;
     console.log(user);
-    const payload = { username: user.username, sub: user.id };
+    const payload = { username: user.username, userId: user.id };
     this.logger.log(`Got JWT for Authenticated User`);
     return { accessToken: this.jwtService.sign(payload) };
   }

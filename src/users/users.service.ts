@@ -1,10 +1,9 @@
 // src/users/users.service.ts
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
-import { skip } from 'node:test';
 
 export const roundsOfHashing = 10;
 
@@ -29,7 +28,11 @@ export class UsersService {
     return this.prisma.user.findMany({ ...query });
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
     return this.prisma.user.findUnique({ where: { id } });
   }
 

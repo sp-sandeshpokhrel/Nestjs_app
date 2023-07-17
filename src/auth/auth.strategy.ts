@@ -2,20 +2,25 @@
 import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { jwtSecret } from './auth.module';
 import { UsersService } from 'src/users/users.service';
+import { ConfigService } from '@nestjs/config';
+import { Profile, Strategy as GithubStr } from 'passport-github';
+import { Strategy as PassportJwtStrategy } from 'passport-jwt';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   private readonly logger = new Logger(JwtStrategy.name);
-  constructor(private usersService: UsersService) {
+  constructor(
+    private usersService: UsersService,
+    configService: ConfigService,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: jwtSecret,
+      secretOrKey: configService.get<string>('JWT_SECRET'),
     });
   }
 
-  async validate(payload: { userId: number }) {
+  async validate(payload: { userId: number; username?: string }) {
     const user = await this.usersService.findOne(payload.userId);
 
     if (!user) {
@@ -27,9 +32,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 }
 
-import { ConfigService } from '@nestjs/config';
-import { Profile, Strategy as GithubStr } from 'passport-github';
-import { Strategy as PassportJwtStrategy } from 'passport-jwt';
+//auth.strategy.ts
 
 @Injectable()
 export class GithubStrategy extends PassportStrategy(GithubStr, 'github') {
@@ -39,6 +42,7 @@ export class GithubStrategy extends PassportStrategy(GithubStr, 'github') {
       clientSecret: configService.get<string>('GITHUB_CLIENT_SECRET'),
       callbackURL: 'http://localhost:3000/auth/callback',
       scope: ['public_profile'],
+      secretOrKey: configService.get<string>('JWT_SECRET'),
     });
   }
 
@@ -61,13 +65,13 @@ export class Jwt2Strategy extends PassportStrategy(
     });
   }
 
-  async validate(payload: { sub: number; username: string }) {
-    console.log(payload.sub, 'here', payload.username);
+  async validate(payload: { userId: number; username: string }) {
+    console.log(payload.userId, 'here', payload.username);
     if (!payload) {
       this.logger.error('Invalid JWT, Could not validate payload');
       throw new UnauthorizedException();
     }
     this.logger.log(`Validated JWT for user`);
-    return { userId: payload.sub, username: payload.username };
+    return { userId: payload.userId, username: payload.username };
   }
 }

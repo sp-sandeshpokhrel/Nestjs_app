@@ -18,7 +18,7 @@ export const jwtSecret = configService.get<string>('JWT_SECRET'); //should be in
     PassportModule,
     JwtModule.register({
       secret: jwtSecret,
-      signOptions: { expiresIn: '5m' }, // e.g. 30s, 7d, 24h
+      signOptions: { expiresIn: '10m' }, // e.g. 30s, 7d, 24h
     }),
     UsersModule,
   ],
