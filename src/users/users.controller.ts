@@ -48,7 +48,7 @@ export class UsersController {
   }
 
   @Get()
-  @UseGuards(AuthGuard('jwt2'))
+  @UseGuards(AuthGuard('jwt'))
   @ApiQuery({ name: 'skip', required: false })
   @ApiQuery({ name: 'take', required: false })
   @ApiBearerAuth()
@@ -65,6 +65,14 @@ export class UsersController {
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserEntity })
   async findOne(@Param('id', ParseIntPipe) id: number) {
+    const user = await this.usersService.findOne(id);
+    if (!user) {
+      this.logger.log(`Couldn't find user with id ${id}`);
+      throw new InternalServerErrorException({
+        error: 'PrismaError',
+        message: 'User not found',
+      });
+    }
     return new UserEntity(await this.usersService.findOne(id));
   }
 

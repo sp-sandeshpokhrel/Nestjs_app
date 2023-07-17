@@ -5,7 +5,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { UsersModule } from 'src/users/users.module';
-import { GithubStrategy, Jwt2Strategy, JwtStrategy } from './auth.strategy';
+import { GithubStrategy, JwtStrategy } from './auth.strategy';
 import { ConfigService } from '@nestjs/config';
 
 const configService = new ConfigService();
@@ -23,6 +23,6 @@ export const jwtSecret = configService.get<string>('JWT_SECRET'); //should be in
     UsersModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, GithubStrategy, Jwt2Strategy],
+  providers: [AuthService, JwtStrategy, GithubStrategy],
 })
 export class AuthModule {}

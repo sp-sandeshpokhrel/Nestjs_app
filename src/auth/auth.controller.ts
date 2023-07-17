@@ -41,9 +41,11 @@ export class AuthController {
   @UseGuards(AuthGuard('github'))
   async authCallback(@Req() req) {
     const user = req.user;
-    console.log(user);
-    const payload = { username: user.username, userId: user.id };
+    const accessToken = await this.authService.socialLogin(
+      +user.id,
+      user.username,
+    );
     this.logger.log(`Got JWT for Authenticated User`);
-    return { accessToken: this.jwtService.sign(payload) };
+    return accessToken;
   }
 }
