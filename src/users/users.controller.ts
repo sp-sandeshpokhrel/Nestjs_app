@@ -60,7 +60,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard('jwt2'))
+  @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserEntity })
   async findOne(@Param('id', ParseIntPipe) id: number) {

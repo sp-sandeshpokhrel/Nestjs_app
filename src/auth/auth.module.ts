@@ -5,9 +5,12 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { UsersModule } from 'src/users/users.module';
-import { JwtStrategy } from './jwt.strategy';
+import { GithubStrategy, Jwt2Strategy, JwtStrategy } from './auth.strategy';
+import { ConfigService } from '@nestjs/config';
 
-export const jwtSecret = 'zjP9h6ZI5LoSKCRj'; //should be in env
+const configService = new ConfigService();
+
+export const jwtSecret = configService.get<string>('JWT_SECRET'); //should be in env
 
 @Module({
   imports: [
@@ -20,6 +23,6 @@ export const jwtSecret = 'zjP9h6ZI5LoSKCRj'; //should be in env
     UsersModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, GithubStrategy, Jwt2Strategy],
 })
 export class AuthModule {}
