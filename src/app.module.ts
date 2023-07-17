@@ -6,7 +6,6 @@ import { ArticlesModule } from './articles/articles.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
-import { Auth2Module } from './auth2/auth2.module';
 
 @Module({
   imports: [
@@ -15,7 +14,6 @@ import { Auth2Module } from './auth2/auth2.module';
     ArticlesModule,
     UsersModule,
     AuthModule,
-    Auth2Module,
   ],
   controllers: [AppController],
   providers: [AppService],

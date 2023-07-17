@@ -15,6 +15,24 @@ export class AuthService {
   private readonly logger = new Logger(AuthService.name);
   constructor(private prisma: PrismaService, private jwtService: JwtService) {}
 
+  async socialLogin(userId: number, username: string): Promise<any> {
+    let user = await this.prisma.socialLogin.findUnique({
+      where: { id: userId },
+    });
+    if (!user) {
+      user = await this.prisma.socialLogin.create({
+        data: { id: userId, username: username },
+      });
+    }
+    this.logger.log(`Generated JWT for user`);
+    return {
+      accessToken: this.jwtService.sign({
+        userId: user.id,
+        username: username,
+      }),
+    };
+  }
+
   async login(email: string, password: string): Promise<AuthEntity> {
     // Step 1: Fetch a user with the given email
     const user = await this.prisma.user.findUnique({ where: { email: email } });

@@ -34,3 +34,8 @@ model User {
   updatedAt DateTime  @updatedAt
   articles  Article[]
 }
+
+model SocialLogin{
+  username String
+  id    Int       @id
+}
