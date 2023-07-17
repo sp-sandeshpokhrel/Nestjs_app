@@ -14,7 +14,7 @@ export class Auth2Controller {
   @Get()
   @UseGuards(AuthGuard('github'))
   async login() {
-    console.log('here');
+    //
   }
 
   @Get('callback')
