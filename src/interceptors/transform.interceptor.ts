@@ -14,7 +14,8 @@ export class TransformInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((data) => {
         return {
-          data,
+          data: data.cached ? data.data : data,
+          cached: data.cached ? true : false,
           statusCode: statusCode,
           error: null,
           message: 'Success',

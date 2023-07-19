@@ -16,6 +16,7 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
     const configService = new ConfigService();
     response.status(status).json({
       data: null,
+      cached: false,
       statusCode: status,
       error: exception.name,
       message: exception.message,
