@@ -15,7 +15,7 @@ import { TwilioModule } from 'src/utils/twilio-service';
     TwilioModule.forRoot({
       accountSid: process.env.TWILIO_SID,
       authToken: process.env.TWILIO_SECRET,
-      from: '+14155238886',
+      from: '+14155238886', //optional while initializing
     }),
     CacheModule.registerAsync({
       isGlobal: true,
