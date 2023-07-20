@@ -8,9 +8,15 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
+import { TwilioModule } from 'src/utils/twilio-service';
 
 @Module({
   imports: [
+    TwilioModule.forRoot({
+      accountSid: process.env.TWILIO_SID,
+      authToken: process.env.TWILIO_SECRET,
+      from: '+14155238886',
+    }),
     CacheModule.registerAsync({
       isGlobal: true,
       imports: [ConfigModule],

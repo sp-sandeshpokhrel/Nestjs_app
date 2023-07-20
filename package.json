@@ -36,13 +36,16 @@
     "cache-manager-redis-yet": "^4.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
+    "p-queue": "^7.3.4",
+    "p-retry": "^5.1.2",
     "passport": "^0.6.0",
     "passport-github": "^1.1.0",
     "passport-jwt": "^4.0.1",
     "redis": "3.1.2",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
-    "swagger-ui-express": "^5.0.0"
+    "swagger-ui-express": "^5.0.0",
+    "twilio": "^4.14.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
