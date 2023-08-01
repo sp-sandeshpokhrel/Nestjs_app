@@ -1,15 +1,10 @@
 // src/main.ts
 
-import { HttpAdapterHost, NestFactory, Reflector } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import {
-  Logger,
-  ValidationPipe,
-  ClassSerializerInterceptor,
-} from '@nestjs/common';
-//import { PrismaClientExceptionFilter } from './exceptions/prisma-client-exception.filter';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { AllExceptionsFilter } from './exceptions/allexception.filter';
 import { TransformInterceptor } from './interceptors/transform.interceptor';
 
