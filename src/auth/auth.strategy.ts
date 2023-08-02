@@ -42,8 +42,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 }
 
-//auth.strategy.ts
-
 @Injectable()
 export class GithubStrategy extends PassportStrategy(GithubStr, 'github') {
   constructor(configService: ConfigService) {
