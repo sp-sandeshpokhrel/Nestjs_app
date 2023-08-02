@@ -35,7 +35,11 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         this.logger.error('Invalid JWT, Could not validate payload');
         throw new UnauthorizedException();
       }
-      return { userId: payload.userId, username: socialUser.username };
+      return {
+        userId: payload.userId,
+        username: socialUser.username,
+        roles: socialUser.roles,
+      };
     }
     this.logger.log(`Validated JWT for user`);
     return user;
