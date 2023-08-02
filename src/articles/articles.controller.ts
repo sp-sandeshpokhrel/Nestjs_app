@@ -12,7 +12,6 @@ import {
   Logger,
   InternalServerErrorException,
   Inject,
-  //UseInterceptors,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
@@ -26,7 +25,6 @@ import {
 import { ArticleEntity } from './entities/article.entity';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-//import { TransformInterceptor } from 'src/transform/transform.interceptor';
 
 @Controller('articles')
 @ApiTags('articles')
@@ -81,16 +79,12 @@ export class ArticlesController {
   @Get(':id')
   @ApiOkResponse({ type: ArticleEntity })
   async findOne(@Param('id', ParseIntPipe) id: number) {
-    const mg = this.cacheManager;
-    console.log(mg.get);
     const article = await this.cacheManager.get(`article-${id}`);
     if (!article) {
-      console.log('cached miss');
       const article = new ArticleEntity(await this.articlesService.findOne(id));
       await this.cacheManager.set(`article-${id}`, article);
       return article;
     }
-    console.log('cached hit', article);
     return { data: article, cached: true };
   }
 

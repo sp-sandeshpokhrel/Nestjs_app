@@ -5,8 +5,8 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { Logger, ValidationPipe } from '@nestjs/common';
-import { AllExceptionsFilter } from './exceptions/allexception.filter';
-import { TransformInterceptor } from './interceptors/transform.interceptor';
+import { AllExceptionsFilter } from './utils/exceptions/allexception.filter';
+import { TransformInterceptor } from './utils/interceptors/transform.interceptor';
 
 async function bootstrap() {
   const configService = new ConfigService();
@@ -18,23 +18,22 @@ async function bootstrap() {
   });
   const logger = new Logger('bootstrap');
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-  //app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   const config = new DocumentBuilder()
-    .setTitle('Median')
-    .setDescription('The Median API description')
+    .setTitle('Nestjs')
+    .setDescription('The Nestjs API description')
     .setVersion('0.1')
     .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('documentation', app, document);
 
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
   app.useGlobalInterceptors(new TransformInterceptor());
 
-  const port = 3000;
+  const port = configService.get('PORT') || 3000;
   await app.listen(port);
   logger.log(`Application listening on port ${port}`);
 }
