@@ -33,9 +33,11 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   articles  Article[]
+  roles     String[]    @default(["user"])
 }
 
 model SocialLogin{
   username String
   id    Int       @id
+  roles     String[]    @default(["user"])
 }

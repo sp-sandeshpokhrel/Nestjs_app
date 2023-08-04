@@ -12,6 +12,7 @@ import {
   Query,
   Logger,
   InternalServerErrorException,
+  Request,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -25,6 +26,12 @@ import {
 } from '@nestjs/swagger';
 import { UserEntity } from './entities/user.entity';
 import { AuthGuard } from '@nestjs/passport';
+import { Roles } from 'src/auth/role.decorator';
+import { Role } from 'src/auth/role.enum';
+import { RolesGuard } from 'src/auth/role.guard';
+import { CheckAbilities } from 'src/utils/casl/casl.decorator';
+import { Action, Subjects } from 'src/utils/casl/casl-ability.factory';
+import { CaslGuard } from 'src/utils/casl/casl.guard';
 
 @Controller('users')
 @ApiTags('users')
@@ -48,12 +55,18 @@ export class UsersController {
   }
 
   @Get()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), CaslGuard)
+  @CheckAbilities({ action: Action.Read, subject: UserEntity })
   @ApiQuery({ name: 'skip', required: false })
   @ApiQuery({ name: 'take', required: false })
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserEntity, isArray: true })
-  async findAll(@Query('skip') skip?: string, @Query('take') take?: string) {
+  async findAll(
+    @Request() req,
+    @Query('skip') skip?: string,
+    @Query('take') take?: string,
+  ) {
+    console.log('In here', req.user);
     let query = {};
     if (skip && take) query = { skip: +skip, take: +take };
     const users = await this.usersService.findAll(query);
@@ -61,7 +74,8 @@ export class UsersController {
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard('jwt'))
+  @Roles(Role.ADMIN)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @ApiBearerAuth()
   @ApiOkResponse({ type: UserEntity })
   async findOne(@Param('id', ParseIntPipe) id: number) {
@@ -77,7 +91,8 @@ export class UsersController {
   }
 
   @Patch(':id')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), CaslGuard)
+  @CheckAbilities({ action: Action.Update, subject: UserEntity })
   @ApiBearerAuth()
   @ApiCreatedResponse({ type: UserEntity })
   async update(
