@@ -21,6 +21,7 @@
     "migration": "npx prsima migrate dev"
   },
   "dependencies": {
+    "@casl/ability": "^6.5.0",
     "@nestjs/cache-manager": "^2.1.0",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.0.0",

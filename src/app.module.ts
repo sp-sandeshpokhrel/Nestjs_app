@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { CacheManagerModule } from './utils/cache/cache.module';
+import { CaslModule } from './utils/casl/casl.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { CacheManagerModule } from './utils/cache/cache.module';
     UsersModule,
     AuthModule,
     CacheManagerModule,
+    CaslModule,
   ],
   controllers: [AppController],
   providers: [AppService],

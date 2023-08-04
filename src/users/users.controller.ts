@@ -29,6 +29,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { Roles } from 'src/auth/role.decorator';
 import { Role } from 'src/auth/role.enum';
 import { RolesGuard } from 'src/auth/role.guard';
+import { CheckAbilities } from 'src/utils/casl/casl.decorator';
+import { Action, Subjects } from 'src/utils/casl/casl-ability.factory';
+import { CaslGuard } from 'src/utils/casl/casl.guard';
 
 @Controller('users')
 @ApiTags('users')
@@ -52,7 +55,8 @@ export class UsersController {
   }
 
   @Get()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), CaslGuard)
+  @CheckAbilities({ action: Action.Read, subject: UserEntity })
   @ApiQuery({ name: 'skip', required: false })
   @ApiQuery({ name: 'take', required: false })
   @ApiBearerAuth()
@@ -87,7 +91,8 @@ export class UsersController {
   }
 
   @Patch(':id')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), CaslGuard)
+  @CheckAbilities({ action: Action.Update, subject: UserEntity })
   @ApiBearerAuth()
   @ApiCreatedResponse({ type: UserEntity })
   async update(
